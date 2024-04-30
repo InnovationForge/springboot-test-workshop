@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: springboot-restapi-application
+
+# Spring Boot Configuration
+server:
+  port: 8080
+  error:
+    include-message: always
+
+# Swagger Configuration
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+# Backend Configuration
+backend:
+  api:
+    url: http://localhost:8181/api/books
+
+# Logging Configuration
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+    com:
+      github:
+        innovationforge: DEBUG
