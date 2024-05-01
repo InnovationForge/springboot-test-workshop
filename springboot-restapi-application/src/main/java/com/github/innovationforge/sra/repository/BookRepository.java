@@ -7,5 +7,5 @@ public interface BookRepository {
     List<Book> findAll();
     Book findById(Long id);
     Book save(Book book);
-    void delete(Long id);
+    void deleteById(Long id);
 }
