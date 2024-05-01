@@ -8,6 +8,7 @@ server:
   error:
     include-message: always
 
+
 # Swagger Configuration
 springdoc:
   swagger-ui:
@@ -20,6 +21,11 @@ springdoc:
 backend:
   api:
     url: http://localhost:8181/api/books
+
+http:
+  connection:
+    maxTotal: 100
+    maxPerRoute: 20
 
 # Logging Configuration
 logging:

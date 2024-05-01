@@ -1,6 +1,7 @@
 // BookRepositoryImpl.java
 package com.github.innovationforge.sra.repository;
 
+import com.github.innovationforge.sra.config.ApiProperties;
 import com.github.innovationforge.sra.model.Book;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
 
-    @Value("${backend.api.url}")
-    private String backendApiUrl;
+    private final ApiProperties apiProperties;
 
     private final RestClient restClient;
 
@@ -24,7 +24,7 @@ public class BookRepositoryImpl implements BookRepository {
     public List<Book> findAll() {
         ResponseEntity<Book[]> response = restClient
                 .get()
-                .uri(backendApiUrl)
+                .uri(apiProperties.getUrl())
                 .retrieve()
                 .toEntity(Book[].class);
         return Arrays.asList(response.getBody());
@@ -34,7 +34,7 @@ public class BookRepositoryImpl implements BookRepository {
     public Book findById(Long id) {
         ResponseEntity<Book> response = restClient
                 .get()
-                .uri(backendApiUrl + "/" + id)
+                .uri(apiProperties.getUrl() + "/" + id)
                 .retrieve()
                 .toEntity(Book.class);
         return response.getBody();
@@ -44,7 +44,7 @@ public class BookRepositoryImpl implements BookRepository {
     public Book save(Book book) {
         ResponseEntity<Book> response = restClient
                 .post()
-                .uri(backendApiUrl)
+                .uri(apiProperties.getUrl())
                 .body(book)
                 .retrieve()
                 .toEntity(Book.class);
@@ -55,7 +55,7 @@ public class BookRepositoryImpl implements BookRepository {
     public void delete(Long id) {
         restClient
                 .delete()
-                .uri(backendApiUrl + "/" + id)
+                .uri(apiProperties.getUrl() + "/" + id)
                 .retrieve();
     }
 }
