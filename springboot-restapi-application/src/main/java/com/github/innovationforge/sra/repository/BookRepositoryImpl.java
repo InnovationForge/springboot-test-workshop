@@ -1,10 +1,8 @@
-// BookRepositoryImpl.java
 package com.github.innovationforge.sra.repository;
 
 import com.github.innovationforge.sra.config.ApiProperties;
 import com.github.innovationforge.sra.model.Book;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClient;

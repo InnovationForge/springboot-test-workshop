@@ -1,4 +1,3 @@
-// BookRepository.java
 package com.github.innovationforge.sra.repository;
 
 import com.github.innovationforge.sra.model.Book;
