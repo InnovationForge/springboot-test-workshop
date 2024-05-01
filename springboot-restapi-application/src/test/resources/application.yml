@@ -1,0 +1,4 @@
+# Backend Configuration
+backend:
+  api:
+    url: http://localhost:8181/api/books

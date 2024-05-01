@@ -194,3 +194,137 @@ In a scenario where you are only connecting to one URL, the "per route" setting 
 The `setMaxConnTotal` is still relevant in this case because it sets an upper limit on the total number of connections, regardless of how many URLs you are connecting to. If you are only connecting to one URL, and `setMaxConnTotal` is set to 100, you can still only have 20 connections to that URL because of the `setMaxConnPerRoute` setting, but you could connect to five different URLs with 20 connections each.
 
 In a multiple request situation to a single URL, these parameters help in controlling the number of simultaneous connections that can be made to the server hosting the URL. This can be useful in managing resources and preventing overloading the server with too many simultaneous connections.
+
+
+`TestRestTemplate` is a convenient utility for integration testing Spring Boot applications, but it's not the only way to perform HTTP requests in tests. Here are a few alternatives:
+
+1. `MockMvc`: This is a Spring MVC testing framework that allows you to test server-side logic without actually sending a real HTTP request. It simulates the full processing stack, allowing for comprehensive testing.
+
+```java
+@Autowired
+private MockMvc mockMvc;
+
+@Test
+public void testGetAllBooks() throws Exception {
+    mockMvc.perform(get("/api/books"))
+        .andExpect(status().isOk());
+}
+```
+
+2. `WebTestClient`: This is a non-blocking, reactive web client for testing web servers. It's part of Spring 5's WebFlux module.
+
+```java
+@Autowired
+private WebTestClient webTestClient;
+
+@Test
+public void testGetAllBooks() {
+    webTestClient.get().uri("/api/books")
+        .exchange()
+        .expectStatus().isOk();
+}
+```
+
+3. `RestTemplate`: Although `RestTemplate` is deprecated in newer versions of Spring, it's still widely used in many projects. It's a synchronous HTTP client that can be used in tests, but it doesn't integrate as nicely with Spring Boot as `TestRestTemplate`.
+
+```java
+private RestTemplate restTemplate = new RestTemplate();
+
+@Test
+public void testGetAllBooks() {
+    ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + port + "/api/books", String.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+}
+```
+
+4. `OkHttpClient`: This is a third-party HTTP client that can be used for integration tests. It's not specific to Spring, so it can be used in any Java project.
+
+```java
+private OkHttpClient client = new OkHttpClient();
+
+@Test
+public void testGetAllBooks() throws IOException {
+    Request request = new Request.Builder()
+        .url("http://localhost:" + port + "/api/books")
+        .build();
+
+    try (Response response = client.newCall(request).execute()) {
+        assertEquals(200, response.code());
+    }
+}
+```
+
+Each of these options has its own strengths and weaknesses, and the best choice depends on your specific needs and the nature of your project.
+
+
+Certainly! Let's explore the value added by `@WebMvcTest` compared to testing the controller as a regular unit test using JUnit.
+
+1. **Focused Testing**:
+   - The primary value of `@WebMvcTest` lies in its focused testing approach.
+   - When you use `@WebMvcTest`, Spring Boot only loads the necessary components related to the web layer (e.g., controllers, view resolvers, and other MVC-related beans).
+   - This avoids loading the entire application context, making your tests faster and more efficient.
+
+2. **Collaborators and Mocking**:
+   - In a regular unit test, you would need to manually create mock collaborators (e.g., services, repositories) required by your controller.
+   - With `@WebMvcTest`, you can use `@MockBean` to automatically create mock collaborators.
+   - This simplifies the process of mocking dependencies and allows you to focus on testing the controller logic.
+
+3. **Validation Testing**:
+   - `@WebMvcTest` provides built-in support for validating request mappings, request parameters, request bodies, and response status.
+   - You can easily test whether your controller correctly handles different scenarios (e.g., invalid input values, different HTTP methods).
+
+4. **Integration with MockMvc**:
+   - `@WebMvcTest` integrates seamlessly with `MockMvc`, which allows you to perform HTTP requests and validate responses.
+   - You can use `MockMvc` to simulate requests and verify the behavior of your controller endpoints.
+
+5. **Efficient Testing of Web Layer**:
+   - By using `@WebMvcTest`, you can focus specifically on testing the web layer without loading unnecessary components.
+   - It's especially useful when you want to verify the behavior of your controllers, request mappings, and view resolution.
+
+In summary, `@WebMvcTest` provides a lightweight and efficient way to test Spring MVC controllers, allowing you to concentrate on the web layer while leveraging Spring's testing infrastructure. If you need to test the entire application context, consider using `@SpringBootTest` with `@AutoConfigureMockMvc` instead[3][3]. 🚀🔍
+
+
+[1]: https://stackoverflow.com/questions/66476558/is-using-cqrs-with-not-separated-services-and-repositories-really-affecting-the ""
+[2]: https://code-maze.com/vertical-slice-architecture-aspnet-core/ ""
+[3]: https://developer.okta.com/blog/2021/07/12/spring-boot-test-slices ""
+[4]: https://github.com/UCY-LINC-LAB/5G-Slicer ""
+[5]: http://garywoodfine.com/implementing-vertical-slice-architecture/ ""
+[6]: https://stackoverflow.com/questions/74841432/clean-architecture-with-repositories-and-services ""
+[7]: https://blog.treblle.com/minimal-api-with-vertical-slice-architecture/ ""
+
+Certainly! While `@WebMvcTest` is specifically designed for testing the web layer (controllers) in Spring Boot applications, there isn't a direct equivalent for services and repositories. However, you can achieve similar focused testing for services and repositories using other techniques:
+
+1. **Service Testing**:
+   - For testing services (business logic), you can use `@Service` or `@Component` along with `@MockBean`.
+   - Create a test class annotated with `@SpringBootTest` and `@AutoConfigureMockMvc` (similar to how you would test controllers).
+   - Use `@MockBean` to mock any dependencies (such as repositories) that your service relies on.
+   - Write test methods to verify the behavior of your service methods.
+
+2. **Repository Testing**:
+   - For testing repositories (data access layer), you can use `@DataJpaTest`.
+   - `@DataJpaTest` loads only the necessary components for JPA repository testing.
+   - It sets up an in-memory database and provides an `EntityManager` for testing JPA queries.
+   - You can use `@MockBean` to mock any external dependencies (e.g., external services) that your repository interacts with.
+
+3. **Custom Slice Testing**:
+   - If you want to create custom slices for services or repositories, you can define your own test configuration classes.
+   - Annotate your custom configuration class with `@TestConfiguration`.
+   - Define beans (services, repositories, etc.) specific to your slice.
+   - Use `@Import` to include your custom configuration in your test class.
+
+4. **Vertical Slice Architecture**:
+   - Consider adopting a vertical slice architecture (similar to what's done in ASP.NET Core).
+   - In this approach, you organize your code around features (vertical slices) rather than layers.
+   - Each feature includes its own controller, service, and repository (if needed).
+   - This promotes better separation of concerns and easier maintenance¹[2][1].
+
+Remember that the goal is to achieve focused testing while maintaining good separation of concerns. Choose the approach that best fits your application's needs and complexity. Whether it's using existing annotations or creating custom slices, the key is to keep your tests efficient and meaningful. 🚀🔍
+
+Source: Conversation with Bing, 01/05/2024
+(1) Vertical Slice Architecture in ASP.NET Core - Code Maze. https://code-maze.com/vertical-slice-architecture-aspnet-core/.
+(2) Is using CQRS with not separated services and repositories really .... https://stackoverflow.com/questions/66476558/is-using-cqrs-with-not-separated-services-and-repositories-really-affecting-the.
+(3) Faster Spring Boot Testing with Test Slices | Okta Developer. https://developer.okta.com/blog/2021/07/12/spring-boot-test-slices.
+(4) UCY-LINC-LAB/5G-Slicer - GitHub. https://github.com/UCY-LINC-LAB/5G-Slicer.
+(5) How to Implement Vertical Slice Architecture | Gary Woodfine. http://garywoodfine.com/implementing-vertical-slice-architecture/.
+(6) Clean Architecture with Repositories and Services. https://stackoverflow.com/questions/74841432/clean-architecture-with-repositories-and-services.
+(7) Minimal API with Vertical slice architecture - Treblle. https://blog.treblle.com/minimal-api-with-vertical-slice-architecture/.
