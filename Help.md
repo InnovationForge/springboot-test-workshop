@@ -180,3 +180,17 @@ public class BookController {
 In this setup, when a client requests the `/api/books` endpoint, the controller will call the `getAllBooks()` method of the `BookService`, which in turn will make an HTTP GET request to the external API to fetch the list of books. The controller then returns the fetched books to the client.
 
 Make sure to configure RestTemplate or WebClient in your Spring Boot application to enable HTTP communication with the external API. Additionally, handle error scenarios gracefully and consider adding logging and caching mechanisms as needed.
+
+
+### Connection Pooling in Spring Boot
+The `setMaxConnTotal` and `setMaxConnPerRoute` methods are used to configure the connection pool settings for the HttpClient.
+
+- `setMaxConnTotal(int max)` sets the maximum number of connections in total. This is the maximum number of connections that can be open at the same time across all routes.
+
+- `setMaxConnPerRoute(int max)` sets the maximum number of connections per route. This is the maximum number of connections that can be open at the same time for a single route (a route in this context is essentially a target host or URL).
+
+In a scenario where you are only connecting to one URL, the "per route" setting is particularly relevant. For example, if you set `setMaxConnPerRoute(20)`, it means you can have up to 20 simultaneous connections to that single URL.
+
+The `setMaxConnTotal` is still relevant in this case because it sets an upper limit on the total number of connections, regardless of how many URLs you are connecting to. If you are only connecting to one URL, and `setMaxConnTotal` is set to 100, you can still only have 20 connections to that URL because of the `setMaxConnPerRoute` setting, but you could connect to five different URLs with 20 connections each.
+
+In a multiple request situation to a single URL, these parameters help in controlling the number of simultaneous connections that can be made to the server hosting the URL. This can be useful in managing resources and preventing overloading the server with too many simultaneous connections.
