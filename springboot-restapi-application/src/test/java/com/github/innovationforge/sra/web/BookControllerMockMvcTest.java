@@ -1,7 +1,6 @@
 package com.github.innovationforge.sra.web;
 
 import com.github.innovationforge.sra.controller.BookController;
-import com.github.innovationforge.sra.integration.BaseIntegrationTest;
 import com.github.innovationforge.sra.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
