@@ -1,4 +1,4 @@
-package com.github.innovationforge.sra.web;
+package com.github.innovationforge.sra.slice;
 
 import com.github.innovationforge.sra.controller.BookController;
 import com.github.innovationforge.sra.service.BookService;
