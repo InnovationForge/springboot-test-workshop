@@ -4,6 +4,7 @@ import com.github.innovationforge.sra.model.Book;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface BookController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    List<Book> getAllBooks();
+    ResponseEntity<List<Book>> getAllBooks();
 
     @Operation(summary = "Get a book by its id")
     @ApiResponses(value = {
@@ -27,7 +28,7 @@ public interface BookController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    Book getBook(@PathVariable Long id);
+    ResponseEntity<Book> getBook(@PathVariable Long id);
 
     @Operation(summary = "Create a new book")
     @ApiResponses(value = {
@@ -36,7 +37,7 @@ public interface BookController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    Book createBook(@RequestBody Book book);
+    ResponseEntity<Book> createBook(@RequestBody Book book);
 
     @Operation(summary = "Update an existing book")
     @ApiResponses(value = {
@@ -46,7 +47,7 @@ public interface BookController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/{id}")
-    Book updateBook(@PathVariable Long id, @RequestBody Book book);
+    ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book book);
 
     @Operation(summary = "Delete a book")
     @ApiResponses(value = {
@@ -55,5 +56,5 @@ public interface BookController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/{id}")
-    void deleteBook(@PathVariable Long id);
+    ResponseEntity<Void> deleteBook(@PathVariable Long id);
 }

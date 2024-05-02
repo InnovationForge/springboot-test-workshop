@@ -452,3 +452,61 @@ In your `BookControllerMockMvcTest` class, you're using `@MockBean` to create a 
 So, even though it seems like this test is going through all layers, it's actually only testing the web layer. The `@MockBean` annotation ensures that the service layer is bypassed, allowing you to focus on testing the behavior of the controller.
 
 If you want to test the interaction between the web layer and the service layer, you should use `@SpringBootTest` along with `MockMvc`, and not mock the service. This will load the entire application context and allow you to test the actual interaction between the layers.
+
+In a Spring Boot application, you can control the HTTP status code returned by your REST endpoints by using the `ResponseEntity` class. `ResponseEntity` represents the entire HTTP response: status code, headers, and body. You can use it to fully configure the HTTP response.
+
+Here's how you can do it in your `BookControllerImpl`:
+
+```java
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+public class BookControllerImpl implements BookController {
+
+    private final BookService bookService;
+
+    @Override
+    public ResponseEntity<List<Book>> getAllBooks() {
+        log.debug("Getting all books");
+        List<Book> books = bookService.getAllBooks();
+        return ResponseEntity.ok(books); // Returns HTTP 200
+    }
+
+    @Override
+    public ResponseEntity<Book> getBook(Long id) {
+        log.debug("Getting book with id: {}", id);
+        Book book = bookService.getBook(id);
+        return ResponseEntity.ok(book); // Returns HTTP 200
+    }
+
+    @Override
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        log.debug("Creating book: {}", book);
+        Book createdBook = bookService.createBook(book);
+        return ResponseEntity.status(201).body(createdBook); // Returns HTTP 201
+    }
+
+    @Override
+    public ResponseEntity<Book> updateBook(Long id, @RequestBody Book book) {
+        log.debug("Updating book with id: {} with data: {}", id, book);
+        Book updatedBook = bookService.updateBook(id, book);
+        return ResponseEntity.ok(updatedBook); // Returns HTTP 200
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteBook(Long id) {
+        log.debug("Deleting book with id: {}", id);
+        bookService.deleteBook(id);
+        return ResponseEntity.noContent().build(); // Returns HTTP 204
+    }
+}
+```
+
+In the above code:
+
+- `ResponseEntity.ok(body)` is used to create a `ResponseEntity` with the given body and HTTP status code 200.
+- `ResponseEntity.status(201).body(body)` is used to create a `ResponseEntity` with the given body and HTTP status code 201.
+- `ResponseEntity.noContent().build()` is used to create a `ResponseEntity` with no body and HTTP status code 204.

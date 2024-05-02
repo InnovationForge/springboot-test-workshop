@@ -4,7 +4,8 @@ import com.github.innovationforge.sra.model.Book;
 import com.github.innovationforge.sra.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,32 +17,37 @@ public class BookControllerImpl implements BookController {
     private final BookService bookService;
 
     @Override
-    public List<Book> getAllBooks() {
+    public ResponseEntity<List<Book>> getAllBooks() {
         log.debug("Getting all books");
-        return bookService.getAllBooks();
+        List<Book> books = bookService.getAllBooks();
+        return ResponseEntity.ok(books); // Returns HTTP 200
     }
 
     @Override
-    public Book getBook(Long id) {
+    public ResponseEntity<Book> getBook(Long id) {
         log.debug("Getting book with id: {}", id);
-        return bookService.getBook(id);
+        Book book = bookService.getBook(id);
+        return ResponseEntity.ok(book); // Returns HTTP 200
     }
 
     @Override
-    public Book createBook(Book book) {
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
         log.debug("Creating book: {}", book);
-        return bookService.createBook(book);
+        Book createdBook = bookService.createBook(book);
+        return ResponseEntity.status(201).body(createdBook); // Returns HTTP 201
     }
 
     @Override
-    public Book updateBook(Long id, Book book) {
+    public ResponseEntity<Book> updateBook(Long id, @RequestBody Book book) {
         log.debug("Updating book with id: {} with data: {}", id, book);
-        return bookService.updateBook(id, book);
+        Book updatedBook = bookService.updateBook(id, book);
+        return ResponseEntity.ok(updatedBook); // Returns HTTP 200
     }
 
     @Override
-    public void deleteBook(Long id) {
+    public ResponseEntity<Void> deleteBook(Long id) {
         log.debug("Deleting book with id: {}", id);
         bookService.deleteBook(id);
+        return ResponseEntity.noContent().build(); // Returns HTTP 204
     }
 }

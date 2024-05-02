@@ -37,7 +37,7 @@ public class BookControllerTest {
 
         when(bookService.getAllBooks()).thenReturn(expectedBooks);
 
-        List<Book> actualBooks = bookController.getAllBooks();
+        List<Book> actualBooks = bookController.getAllBooks().getBody();
 
         assertEquals(expectedBooks, actualBooks);
     }
@@ -49,7 +49,7 @@ public class BookControllerTest {
 
         when(bookService.getBook(1L)).thenReturn(expectedBook);
 
-        Book actualBook = bookController.getBook(1L);
+        Book actualBook = bookController.getBook(1L).getBody();
 
         assertEquals(expectedBook, actualBook);
     }
@@ -62,7 +62,7 @@ public class BookControllerTest {
 
         when(bookService.createBook(newBook)).thenReturn(expectedBook);
 
-        Book actualBook = bookController.createBook(newBook);
+        Book actualBook = bookController.createBook(newBook).getBody();
 
         assertEquals(expectedBook, actualBook);
     }
@@ -74,7 +74,7 @@ public class BookControllerTest {
 
         when(bookService.updateBook(1L, updatedBook)).thenReturn(updatedBook);
 
-        Book actualBook = bookController.updateBook(1L, updatedBook);
+        Book actualBook = bookController.updateBook(1L, updatedBook).getBody();
 
         assertEquals(updatedBook, actualBook);
     }
